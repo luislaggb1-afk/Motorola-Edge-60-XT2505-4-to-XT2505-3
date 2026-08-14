@@ -80,7 +80,7 @@ Write-Host "[OK] Dispositivo detectado: $($devices.Trim())" -ForegroundColor Gre
 # Verificación de seguridad: bootloader desbloqueado
 $secure = & $Fastboot getvar securestate 2>&1
 if ($secure -notmatch "flashing_unlocked") {
-    throw "SECURE STATE NO ES flashing_unlocked ($secure). El flash requiere bootloader desbloqueado."
+    throw "SECURE STATE NO ES flashing_unlocked ($secure). Este procedimiento NO desbloquea el bootloader (el XT2505-4 viene desbloqueado de fábrica). Los comandos antiguos 'fastboot oem unlock' ya no existen en MBM-3.1; se requiere el unlock code oficial de Motorola (https://en-us.support.motorola.com/app/standalone/bootloader/unlock-your-device-a)."
 }
 Write-Host "[OK] securestate: flashing_unlocked (bootloader desbloqueado)" -ForegroundColor Green
 

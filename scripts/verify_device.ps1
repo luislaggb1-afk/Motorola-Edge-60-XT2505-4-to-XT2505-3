@@ -88,9 +88,12 @@ if ($devices -match "fastboot") {
 
     if ($secure -match "flashing_unlocked") {
         Write-Host "  [OK] Bootloader desbloqueado - listo para flashear" -ForegroundColor Green
+        Write-Host "  (el XT2505-4 viene desbloqueado de fábrica; no se ejecutó ningún unlock)" -ForegroundColor Green
     } else {
-        Write-Host "  [!] Bootloader NO desbloqueado. Necesitas: fastboot oem unlock" -ForegroundColor Red
-        Write-Host "  [!] OJO: esto borra el teléfono y anula la garantía." -ForegroundColor Red
+        Write-Host "  [!] Bootloader bloqueado. Este procedimiento NO desbloquea:" -ForegroundColor Red
+        Write-Host "  [!] los MBM-3.1 modernos ya no aceptan 'fastboot oem unlock' (comando antiguo)." -ForegroundColor Red
+        Write-Host "  [!] Se necesita el unlock code oficial de Motorola para tu serial:" -ForegroundColor Red
+        Write-Host "  [!] https://en-us.support.motorola.com/app/standalone/bootloader/unlock-your-device-a" -ForegroundColor Red
     }
 } else {
     Write-Host "  No hay dispositivo en fastboot - conéctalo con el teléfono apagado" -ForegroundColor Yellow

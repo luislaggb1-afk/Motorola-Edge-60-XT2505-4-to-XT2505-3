@@ -18,7 +18,7 @@ Procedimiento probado con éxito (66/66 pasos de flash OK) y documentado con ant
 | Codename | `scout` (`scout_g_sys`) |
 | Plataforma | MT6878 (**Dimensity 7400**, 2.6 GHz) |
 | Build original | `V2VC35.33-132-4` (Android 15) · canal `retcn` |
-| Bootloader | MBM-3.1-scout-904faf · `flashing_unlocked` |
+| Bootloader | MBM-3.1-scout-904faf · `flashing_unlocked` (de fábrica, **sin desbloquear**) |
 | Baseband | `MT6878M_NR17.RC.MP.V18.6.3.P30.02.202R` |
 | **ROM instalada** | **RETBR Android 16 `W1VCS36H.14-20-19-7`** · canal `retbr` |
 
@@ -76,7 +76,7 @@ Google Drive (file id `1ucrNLrLcZtY8QXzkrg84Rj8cxfU4wMOX`):
 - PC con **Windows** (PowerShell) y **25 GB libres**
 - **platform-tools oficial**: https://developer.android.com/tools/releases/platform-tools
   (se asume en `C:\adb\platform-tools`; ajusta la variable `$PlatformTools` en los scripts)
-- Teléfono con **bootloader ya desbloqueado** (`fastboot oem unlock` previo)
+- Teléfono con **bootloader desbloqueado** (el XT2505-4 viene `flashing_unlocked` de fábrica — no se ejecuta ningún unlock en este procedimiento)
 - Cable USB original con transferencia de datos
 - Batería ≥ 70%
 
@@ -98,13 +98,23 @@ C:\adb\platform-tools\adb.exe shell "cat /sys/devices/system/cpu/cpu4/cpufreq/cp
 **Esperado (este caso):** `2600000` (Dimensity 7400), `mt6878`, `V2VC35.33-132-4`, `retcn`.
 Alternativa: ejecuta `scripts/verify_device.ps1`.
 
-### Paso 2 — Desbloquea el bootloader (si aún no lo está)
+### Paso 2 — Verifica el estado del bootloader
+
+**Este procedimiento NO desbloquea el bootloader.** El XT2505-4 (variante China)
+viene con el bootloader **desbloqueado de fábrica** (`securestate: flashing_unlocked`
+— verificado en vivo en el primer `getvar all`, sin ejecutar ningún comando de unlock).
 
 ```powershell
 C:\adb\platform-tools\adb.exe reboot bootloader
-C:\adb\platform-tools\fastboot.exe oem unlock        # confirma en pantalla con volumen
 C:\adb\platform-tools\fastboot.exe getvar securestate # debe decir: flashing_unlocked
 ```
+
+> ⚠️ Si tu unidad viniera bloqueada, **NO uses comandos antiguos como `fastboot oem
+> unlock`**: en los bootloaders MBM-3.1 de Motorola modernos (MTK 2025) ese comando
+> ya no existe. El desbloqueo oficial requiere el **unlock code de Motorola**
+> (https://en-us.support.motorola.com/app/standalone/bootloader/unlock-your-device-a),
+> que genera un token único para tu serial. Sin ese código, este procedimiento no
+> aplica — el flash exige `flashing_unlocked`.
 
 ### Paso 3 — Descarga los dos firmwares
 
