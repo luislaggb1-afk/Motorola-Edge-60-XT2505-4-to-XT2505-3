@@ -1,0 +1,11 @@
+# Firmwares descargados (demasiado grandes para GitHub - se referencian por link)
+*.zip
+*.img
+*.bin
+
+# Archivos generados
+flash3/
+extracted/
+flash_log.txt
+flashfile_ROM1.xml
+flashfile_ROM3.xml
