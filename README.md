@@ -109,12 +109,33 @@ C:\adb\platform-tools\adb.exe reboot bootloader
 C:\adb\platform-tools\fastboot.exe getvar securestate # debe decir: flashing_unlocked
 ```
 
-> ⚠️ Si tu unidad viniera bloqueada, **NO uses comandos antiguos como `fastboot oem
-> unlock`**: en los bootloaders MBM-3.1 de Motorola modernos (MTK 2025) ese comando
-> ya no existe. El desbloqueo oficial requiere el **unlock code de Motorola**
-> (https://en-us.support.motorola.com/app/standalone/bootloader/unlock-your-device-a),
-> que genera un token único para tu serial. Sin ese código, este procedimiento no
-> aplica — el flash exige `flashing_unlocked`.
+> ### Si tu unidad viene bloqueada (`oem_locked`) — desbloqueo oficial actual
+>
+> Motorola ya no usa `fastboot oem unlock` a secas (comando de dispositivos antiguos).
+> En los MBM-3.1 modernos el desbloqueo oficial es por **unlock code**:
+>
+> ```powershell
+> # 1. Obtén el unlock data del dispositivo (en modo fastboot)
+> C:\adb\platform-tools\fastboot.exe oem get_unlock_data
+>
+> # 2. Copia el código de salida en UNA sola línea (quita los prefijos "(bootloader)")
+> #    Ej. 3A95975700879246#5A5932324447544E3344006D6F746F2067200000#024D44FE...  (formato real)
+>
+> # 3. Pégalo en la página oficial de Motorola y solicita el código:
+> #    https://en-us.support.motorola.com/app/standalone/bootloader/unlock-your-device-b
+> #    (Si el CID de tu unidad no califica, la página responderá
+> #    "Your device does not qualify for bootloader unlocking" y no habrá código.)
+>
+> # 4. Motorola te envía el unlock key por email. Úsalo así:
+> C:\adb\platform-tools\fastboot.exe flashing unlock <UNLOCK_KEY>
+> #    (en algunos modelos: fastboot oem unlock <UNLOCK_KEY>)
+>
+> # 5. Confirma en pantalla y verifica:
+> C:\adb\platform-tools\fastboot.exe getvar securestate   # ahora: flashing_unlocked
+> ```
+>
+> ⚠️ Desbloquear **borra todo** el teléfono y marca `iswarrantyvoid: yes`.
+> Y una vez con ROM global instalada, **no vuelvas a bloquearlo** (ver sección Relock).
 
 ### Paso 3 — Descarga los dos firmwares
 
